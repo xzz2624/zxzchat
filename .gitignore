@@ -1,0 +1,30 @@
+# JetBrains（根目录与 server 中的 IDE 配置）
+.idea/
+
+# Qt Creator 本地配置与构建产物
+client/.qtcreator/
+client/build/
+
+# CLion/CMake 构建产物
+server/cmake-build-*/
+
+# 通用 CMake 构建文件（将来若在其他目录构建也适用）
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+*.ninja
+.ninja_deps
+.ninja_log
+
+# 编译产物
+*.o
+*.obj
+*.exe
+*.dll
+*.pdb
+
+# 系统杂项
+.DS_Store
+Thumbs.db
