@@ -1,3 +1,6 @@
+
+QT       += core gui network
+
 QT += widgets
 
 CONFIG += c++17
@@ -8,6 +11,7 @@ CONFIG += c++17
 
 SOURCES += \
     global.cpp \
+    httpmgr.cpp \
     logindialog.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -15,9 +19,11 @@ SOURCES += \
 
 HEADERS += \
     global.h \
+    httpmgr.h \
     logindialog.h \
     mainwindow.h \
-    registerdialog.h
+    registerdialog.h \
+    singleton.h
 
 FORMS += \
     logindialog.ui \
