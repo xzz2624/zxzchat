@@ -55,3 +55,36 @@
 - 在“获取验证码”按钮点击事件中实际调用 `HttpMgr::PostHttpReq()`，并配置验证码服务端接口。
 - 补充注册提交请求及其成功、失败、字段校验等响应处理。
 - 完善未注册请求 ID 的兜底处理，并接入登录、忘记密码等模块的网络通信。
+
+## Day 3：Gate Server HTTP 服务与验证码接口基础
+
+### 已完成
+
+- 新建 `GateServer` 服务端工程，使用 CMake 配置 C++20、Boost.Beast/Asio、JsonCpp 以及 Windows 网络库依赖。
+- 实现基于 Boost.Asio 的异步 TCP HTTP 服务：启动后监听 `8081` 端口，异步接收连接，并为每个连接创建独立的 `HttpConnection` 对象处理请求。
+- 实现 HTTP 请求的异步读取、响应写回和 60 秒连接超时关闭；未匹配的 GET/POST 路由返回 `404 Not Found`。
+- 增加 GET 查询参数预解析和 URL 解码能力，`/get_test` 测试接口可返回收到的查询参数。
+- 实现线程安全单例模板及 `LogicSystem` 路由系统，支持分别注册、分发 GET 与 POST 业务处理函数。
+- 新增 `/get_varifycode` POST 接口：接收 JSON 请求体，校验 JSON 格式，并返回错误码及请求中的邮箱字段，为客户端获取验证码请求提供联调基础。
+
+### 函数说明
+
+| 函数 | 功能 |
+| --- | --- |
+| `main()` | 创建 `io_context`，注册退出信号处理，启动 Gate Server 并监听 `8081` 端口。 |
+| `CServer::Start()` | 异步接受 TCP 连接；为新连接创建并启动 `HttpConnection`，随后继续监听。 |
+| `HttpConnection::Start()` | 异步读取 HTTP 请求，读取完成后进入请求处理并启动超时检测。 |
+| `HttpConnection::HandleReq()` | 按 HTTP 方法分发 GET/POST 请求，调用逻辑路由；未命中路由时返回 404。 |
+| `HttpConnection::PreParseGetParam()` | 拆分 GET 请求路径与查询字符串，解码并保存查询参数。 |
+| `HttpConnection::WriteResponse()` | 设置响应内容长度，异步写回响应并关闭发送端与取消超时计时器。 |
+| `LogicSystem::RegGet()` / `RegPost()` | 注册 GET 或 POST 路由对应的业务处理函数。 |
+| `LogicSystem::HandleGet()` / `HandlePost()` | 根据请求路径查找并执行已注册的业务处理函数。 |
+| `LogicSystem::LogicSystem()` | 注册 `/get_test` 测试接口和 `/get_varifycode` 验证码请求接口。 |
+| `Singleton<T>::GetInstance()` | 使用 `std::call_once` 线程安全地创建并获取全局单例。 |
+
+### 待完成
+
+- 实际接入邮件验证码发送、验证码缓存与有效期校验。
+- 实现注册接口、用户数据持久化及字段重复性校验。
+- 补充 HTTP 方法不支持、业务异常和请求参数缺失等错误响应，并完善接口命名与响应协议。
+- 将客户端“获取验证码”请求指向 Gate Server，完成端到端联调。
