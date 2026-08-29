@@ -9,13 +9,17 @@
 class HttpConnection :public std::enable_shared_from_this<HttpConnection>{
     friend class LogicSystem;
 public:
-    HttpConnection(tcp::socket socket);
+    HttpConnection(boost::asio::io_context& ioc);
     void Start();
+    tcp::socket& GetSocket() {
+        return _socket;
+    }
 private:
     void CheckDeadline();//超时检测
     void WriteResponse();
     void PreParseGetParam();
     void HandleReq();
+
     tcp::socket  _socket;
     // The buffer for performing reads.
     beast::flat_buffer  _buffer{ 8192 };//8KB

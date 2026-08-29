@@ -15,10 +15,15 @@
 #include <functional>
 #include <QStyle>
 #include <QRegularExpression>
-
+#include <QApplication>
+#include <QLocale>
+#include <QTranslator>
+#include <QFile>
+#include <QSettings>
+#include <QDir>
 #define emit
 
-extern std::function<void(QWidget*)> repolish;
+extern std::function<void(QWidget*)> repolish;//刷新界面
 
 enum ReqId{
     ID_GET_VARIFY_CODE = 1001, //获取验证码
@@ -35,4 +40,5 @@ enum Modules{//消息属于哪个模块
     REGISTERMOD = 0,
 };
 
+extern QString gate_url_prefix;//解析url
 #endif // GLOBAL_H

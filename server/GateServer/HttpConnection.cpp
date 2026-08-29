@@ -5,8 +5,7 @@
 #include "HttpConnection.h"
 #include "LogicSystem.h"
 
-HttpConnection::HttpConnection(tcp::socket socket): _socket(std::move(socket)) {
-
+HttpConnection::HttpConnection(boost::asio::io_context& ioc): _socket(ioc) {
 }
 
 //**********url解析工具函数*****************************
@@ -97,8 +96,10 @@ void HttpConnection::HandleReq() {
     //***********处理逻辑***************
     //处理GET请求
     if(_request.method() == http::verb::get){
+        //GET请求交给HandleGet
         PreParseGetParam();
         bool success = LogicSystem::GetInstance()->HandleGet(_get_url,shared_from_this());//_request.target()请求的路由
+        //回包
         if(!success){
             _response.result(http::status::not_found);
             _response.set(http::field::content_type,"text/plain");
@@ -106,6 +107,7 @@ void HttpConnection::HandleReq() {
             WriteResponse();
             return;
         }
+
         _response.result(http::status::ok);
         _response.set(http::field::server,"GateServer");
         WriteResponse();
@@ -113,7 +115,9 @@ void HttpConnection::HandleReq() {
     }
     //处理POST请求
     if (_request.method() == http::verb::post) {
+        //POST请求交给HandlePost
         bool success = LogicSystem::GetInstance()->HandlePost(_request.target(), shared_from_this());
+        //回包
         if (!success) {
             _response.result(http::status::not_found);
             _response.set(http::field::content_type, "text/plain");

@@ -28,3 +28,9 @@ Makefile
 # 系统杂项
 .DS_Store
 Thumbs.db
+
+
+#邮箱授权码
+server/VerifyServer/config.json
+server/VerifyServer/.env
+server/VerifyServer/node_modules/
