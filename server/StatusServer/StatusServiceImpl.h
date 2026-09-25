@@ -1,0 +1,14 @@
+//
+// Created by zxzzsdb on 2026/9/11.
+//
+
+#ifndef STATUSSERVER_STATUSSERVICEIMPL_H
+#define STATUSSERVER_STATUSSERVICEIMPL_H
+
+
+class StatusServiceImpl {
+
+};
+
+
+#endif //STATUSSERVER_STATUSSERVICEIMPL_H
